@@ -6,13 +6,30 @@ const { validationResult } = require("express-validator");
 
 const jwt = require("jsonwebtoken");
 
+const generator = require("generate-password");
+
+const nodemailer = require("nodemailer");
+
+const log = console.log;
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL || "asmaouertani1234@gmail.com", // TODO: your gmail account
+    pass: process.env.PASSWORD || "07983246", // TODO: your gmail password
+  },
+});
+
 const signup = async (req, res, next) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
     return next(new httpError("invalid input passed ", 422));
   }
 
-  const { nom, prenom, email, password, telephone } = req.body;
+  const { nom, prenom, email, telephone } = req.body;
+  const password = generator.generate({
+    length: 10,
+    numbers: true,
+  });
   let existinguser;
   try {
     existinguser = await ingenieur.findOne({ email: email });
@@ -41,6 +58,20 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
+  let mailOptions = {
+    from: "asmaouertani1234@gmail.com", // TODO: email sender
+    to: email, // TODO: email receiver
+    subject: "Confirmation de creation de compte",
+    text: "Votre mot de passe est " + password,
+  };
+
+  transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+      return log("Error occurs");
+    }
+    return log("Email sent!!!");
+  });
+
   let token;
   try {
     token = jwt.sign(
@@ -53,13 +84,11 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
-  res
-    .status(201)
-    .json({
-      ingenieur: createduser.id,
-      email: createduser.email,
-      token: token,
-    });
+  res.status(201).json({
+    ingenieur: createduser.id,
+    email: createduser.email,
+    token: token,
+  });
 };
 
 const login = async (req, res, next) => {
@@ -94,10 +123,10 @@ const login = async (req, res, next) => {
 };
 
 const getIngenieurById = async (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.id;
   let existingUser;
   try {
-    existingUser = await ingenieur.findById(id)
+    existingUser = await ingenieur.findById(id);
   } catch {
     const error = new httpError("failed signup try again later", 500);
     return next(error);
@@ -142,7 +171,11 @@ const updateIngenieur = async (req, res, next) => {
     return next(new httpError("invalid input passed ", 422));
   }
 
-  const { nom, prenom,email, password,telephone } = req.body;
+  const { nom, prenom, email, telephone } = req.body;
+  const password = generator.generate({
+    length: 10,
+    numbers: true,
+  });
   const UserId = req.params.id;
   let existingUser;
   try {
@@ -152,29 +185,40 @@ const updateIngenieur = async (req, res, next) => {
     return next(error);
   }
 
-
   existingUser.nom = nom;
-  existingUser.prenom=prenom;
+  existingUser.prenom = prenom;
   existingUser.email = email;
   existingUser.password = password;
-  existingUser.telephone=telephone;
+  existingUser.telephone = telephone;
 
-
-
-  
   try {
-     existingUser.save();
+    existingUser.save();
   } catch {
     const error = new httpError("failed to patch", 500);
     return next(error);
   }
 
+  let mailOptions = {
+    from: "asmaouertani1234@gmail.com", // TODO: email sender
+    to: email, // TODO: email receiver
+    subject: "Modification de coordonnées",
+    text: "Votre mot de passe est " + password,
+  };
+
+  transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+      return log("Error occurs");
+    }
+    return log("Email sent!!!");
+  });
+
+
   res.status(200).json({ ingenieur: existingUser });
 };
 
 exports.signup = signup;
-exports.login=login
-exports.getIngenieurById=getIngenieurById
-exports.getAllIngenieur=getAllIngenieur
-exports.deleteIngenieur=deleteIngenieur
-exports.updateIngenieur=updateIngenieur
+exports.login = login;
+exports.getIngenieurById = getIngenieurById;
+exports.getAllIngenieur = getAllIngenieur;
+exports.deleteIngenieur = deleteIngenieur;
+exports.updateIngenieur = updateIngenieur;

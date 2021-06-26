@@ -17,9 +17,6 @@ check('prenom')
 check('email')
 .normalizeEmail(),
 
-check('password')
-.isLength({min:8}),
-
 check('telephone')
 .isLength({min:8})
 , ingenieurControllers.signup)
@@ -33,7 +30,7 @@ check('password')
 
 route.get('/',ingenieurControllers.getAllIngenieur)
 
-route.get('/:id',
+route.patch('/:id',
 check('nom')
 .not()
 .isEmpty(),
@@ -45,14 +42,12 @@ check('prenom')
 check('email')
 .normalizeEmail(),
 
-check('password')
-.isLength({min:8}),
 
 check('telephone')
 .isLength({min:8})
-,ingenieurControllers.getIngenieurById)
+,ingenieurControllers.updateIngenieur)
 
-route.patch('/:id',ingenieurControllers.updateIngenieur)
+route.get('/:id',ingenieurControllers.getIngenieurById)
 
 route.delete('/:id',ingenieurControllers.deleteIngenieur)
 
