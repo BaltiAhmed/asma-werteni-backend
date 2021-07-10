@@ -103,8 +103,9 @@ const login = async (req, res, next) => {
   try {
     existingUser = await ingenieur.findOne({ email: email });
   } catch {
-    return next(new httpError("ivalid input passed", 422));
+    return next(new httpError("failed to find", 422));
   }
+  console.log(existingUser)
   if (!existingUser || existingUser.password !== password) {
     return next(new httpError("invalid input passed ", 422));
   }
@@ -137,7 +138,7 @@ const getIngenieurById = async (req, res, next) => {
 const getAllIngenieur = async (req, res, next) => {
   let existingUser;
   try {
-    existingUser = await ingenieur.find({}, "-password");
+    existingUser = await ingenieur.find();
   } catch {
     const error = new httpError("failed to fetch try again later", 500);
     return next(error);
