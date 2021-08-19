@@ -9,9 +9,8 @@ const agriculteurSchema = new schema({
     password:{type:String,required:true,minlenght:8},
     telephone:{type:String,required:true,minlenght:8},
     adresse:{type:String,required:true},
-    reclamations:[{ type: mongoose.Types.ObjectId, required: true, ref: "reclamation" }]
-   
-
+    reclamations:[{ type: mongoose.Types.ObjectId, required: true, ref: "reclamation" }],
+    demandeDiagnostique:[{ type: mongoose.Types.ObjectId, required: true, ref: "demandeDiagnostique" }]
 
 })
 

@@ -23,6 +23,8 @@ const rapportRoute = require("./routes/rapport");
 
 const reclamationRoute = require("./routes/reclamation");
 
+const demandeDiagnostiqueRoutes = require("./routes/demande-diagnostique");
+
 app.use(bodyParser.json());
 
 app.use("/uploads/images", express.static(path.join("uploads", "images")));
@@ -51,6 +53,7 @@ app.use("/api/traitement", traitementRoute);
 app.use("/api/reclamation", reclamationRoute);
 
 app.use("/api/rapport", rapportRoute);
+app.use("/api/demande", demandeDiagnostiqueRoutes);
 
 app.use((req, res, next) => {
   const error = new httperror("could not find that page", 404);
