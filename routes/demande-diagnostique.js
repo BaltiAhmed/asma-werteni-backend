@@ -8,5 +8,6 @@ const { check } = require("express-validator");
 
 route.post("/ajout",fileUpload.single("image"), demandeControllers.ajout);
 route.get('/',demandeControllers.getDemande)
+route.get('/:id',demandeControllers.getDemandeById)
 
 module.exports = route;

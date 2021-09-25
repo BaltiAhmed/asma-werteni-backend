@@ -9,6 +9,7 @@ const demandeDiagnostiqueSchema = new schema({
   maladie: { type: String },
   blee: { type: String },
   sympthome: { type: String },
+  finished:{type:Boolean,require:true},
   reponses: [{ type: mongoose.Types.ObjectId, required: true, ref: "reponse" }],
 });
 

@@ -22,6 +22,7 @@ const ajout = async (req, res, next) => {
     maladie,
     blee,
     sympthome,
+    finished: false,
     reponses: [],
   });
 
@@ -56,5 +57,18 @@ const getDemande = async (req, res, next) => {
   res.json({ demande: existingDemande });
 };
 
+const getDemandeById = async (req, res, next) => {
+  const id = req.params.id;
+  let existingDemande;
+  try {
+    existingDemande = await demande.findById(id);
+  } catch {
+    const error = new httpError("failed to fetch try again later", 500);
+    return next(error);
+  }
+  res.json({ demande: existingDemande });
+};
+
 exports.ajout = ajout;
-exports.getDemande = getDemande
+exports.getDemande = getDemande;
+exports.getDemandeById = getDemandeById

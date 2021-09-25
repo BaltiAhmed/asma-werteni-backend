@@ -11,12 +11,14 @@ const ajoutreclamation = async (req, res, next) => {
     return next(new httpError("invalid input passed ", 422));
   }
 
-  const { date, sujet, reponse, IdAgriculteur } = req.body;
+  const { sujet,IdAgriculteur } = req.body;
+
+  const date = new Date()
 
   const createdreclamation = new reclamation({
-    date,
+    date:date.getFullYear()+"/"+date.getMonth()+"/"+date.getDay(),
     sujet,
-    reponse,
+    reponse:'jhjhhj',
   });
 
   let existingAgriculteur;

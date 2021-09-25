@@ -112,7 +112,7 @@ const getAgriculteurById = async (req, res, next) => {
 const getAllAgriculteur = async (req, res, next) => {
   let existingUser;
   try {
-    existingUser = await agriculteur.find({}, "-password");
+    existingUser = await agriculteur.find();
   } catch {
     const error = new httpError("failed to fetch try again later", 500);
     return next(error);
