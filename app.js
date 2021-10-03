@@ -24,6 +24,7 @@ const rapportRoute = require("./routes/rapport");
 const reclamationRoute = require("./routes/reclamation");
 
 const demandeDiagnostiqueRoutes = require("./routes/demande-diagnostique");
+const responceRoute = require("./routes/reponce");
 
 app.use(bodyParser.json());
 
@@ -54,6 +55,7 @@ app.use("/api/reclamation", reclamationRoute);
 
 app.use("/api/rapport", rapportRoute);
 app.use("/api/demande", demandeDiagnostiqueRoutes);
+app.use("/api/reponce", responceRoute);
 
 app.use((req, res, next) => {
   const error = new httperror("could not find that page", 404);
