@@ -25,5 +25,6 @@ route.delete("/:id", traitementControllers.deletetraitement);
 route.get("/:id", traitementControllers.gettraitementById);
 route.get("/", traitementControllers.gettraitement);
 route.get("/maladie/:id", traitementControllers.gettraitementByMaladieId);
+route.get("/reponce/:id", traitementControllers.getTraitementByReponceId);
 
 module.exports = route;

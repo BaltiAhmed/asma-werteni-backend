@@ -5,6 +5,7 @@ const traitement = require("../models/traitement");
 const demandeDiagnostique = require("../models/demande-diagnostique");
 
 const { validationResult } = require("express-validator");
+const { response } = require("express");
 
 const ajoutreponce = async (req, res, next) => {
   const error = validationResult(req);
@@ -43,13 +44,15 @@ const ajoutreponce = async (req, res, next) => {
     nom,
     description,
     cause,
-    traitement: [],
+    description1: existingtraitement1.description,
+    image1: existingtraitement1.image,
+    prix1: existingtraitement1.prix,
+    description2: existingtraitement.description,
+    image2: existingtraitement.image,
+    prix2: existingtraitement.prix,
   });
 
   try {
-    createdreponce.traitement.push(existingtraitement);
-    createdreponce.traitement.push(existingtraitement1);
-    createdreponce.save();
     existingDemande.reponses.push(createdreponce);
     existingDemande.save();
   } catch (err) {
@@ -71,5 +74,36 @@ const getReponce = async (req, res, next) => {
   res.json({ reponce: existingReponce });
 };
 
+const getReponceByDemandeId = async (req, res, next) => {
+  const id = req.params.id;
+
+  let existingReponce;
+  try {
+    existingReponce = await demandeDiagnostique
+      .findById(id)
+      .populate("reponses");
+  } catch (err) {
+    const error = new httpError(
+      "Fetching BolPlan failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!existingReponce || existingReponce.reponses.length === 0) {
+    return next(
+      new httpError("Could not find responce for the provided user id.", 404)
+    );
+  }
+
+  res.json({
+    reponce: existingReponce.reponses.map((el) =>
+      el.toObject({ getters: true })
+    ),
+    id: existingReponce._id,
+  });
+};
+
 exports.ajoutreponce = ajoutreponce;
-exports.getReponce = getReponce
+exports.getReponce = getReponce;
+exports.getReponceByDemandeId = getReponceByDemandeId;

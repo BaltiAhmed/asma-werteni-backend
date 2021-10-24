@@ -2,6 +2,7 @@ const httpError = require("../models/error");
 
 const traitement = require("../models/traitement");
 const maladie = require("../models/maladie");
+const reponce = require("../models/reponce");
 
 const { validationResult } = require("express-validator");
 
@@ -142,9 +143,42 @@ const gettraitementByMaladieId = async (req, res, next) => {
   });
 };
 
+const getTraitementByReponceId = async (req, res, next) => {
+  const id = req.params.id;
+
+  console.log(id)
+
+  let traitement;
+  try {
+    traitement = await reponce.findById(id).populate("traitement");
+  } catch (err) {
+    const error = new httpError(
+      "Fetching places failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!traitement || traitement.traitement.length === 0) {
+    return next(
+      new httpError(
+        "Could not find traitement for the provided reponce id.",
+        404
+      )
+    );
+  }
+
+  res.json({
+    traitement: traitement.traitement.map((item) =>
+      item.toObject({ getters: true })
+    ),
+  });
+};
+
 exports.ajouttraitement = ajouttraitement;
 exports.updatetraitement = updatetraitement;
 exports.gettraitement = gettraitement;
 exports.gettraitementById = gettraitementById;
 exports.deletetraitement = deletetraitement;
 exports.gettraitementByMaladieId = gettraitementByMaladieId
+exports.getTraitementByReponceId = getTraitementByReponceId

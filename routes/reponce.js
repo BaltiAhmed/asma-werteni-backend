@@ -17,5 +17,6 @@ route.post(
 );
 
 route.get('/',reponceControllers.getReponce)
+route.get('/demande/:id',reponceControllers.getReponceByDemandeId)
 
 module.exports = route;
