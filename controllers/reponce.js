@@ -90,6 +90,8 @@ const getReponceByDemandeId = async (req, res, next) => {
     return next(error);
   }
 
+  console.log(existingReponce)
+
   if (!existingReponce || existingReponce.reponses.length === 0) {
     return next(
       new httpError("Could not find responce for the provided user id.", 404)
